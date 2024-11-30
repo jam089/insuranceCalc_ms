@@ -1,0 +1,15 @@
+services:
+
+  pg:
+    image: postgres
+    environment:
+      POSTGRES_DB: insuranceCalc
+      POSTGRES_USER: pgadmin
+      POSTGRES_PASSWORD: pgadmin
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
