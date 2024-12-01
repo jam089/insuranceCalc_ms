@@ -1,0 +1,22 @@
+{
+  "2024-11-30": [
+    {
+      "cargo_type": "Glass",
+      "rate": "0.015"
+    },
+    {
+      "cargo_type": "Other",
+      "rate": "0.04"
+    }
+  ],
+  "2024-12-01": [
+    {
+      "cargo_type": "Glass",
+      "rate": "0.01"
+    },
+    {
+      "cargo_type": "Other",
+      "rate": "0.05"
+    }
+  ]
+}
