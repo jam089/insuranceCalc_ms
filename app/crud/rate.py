@@ -38,6 +38,19 @@ async def create_rate(
     return new_rate
 
 
+async def update_rate(
+    db_sess: AsyncSession,
+    rate: Rate,
+    rate_in: BaseModel,
+    partial: bool = False,
+) -> Rate:
+    for name, value in rate_in.model_dump(exclude_unset=partial).items():
+        setattr(rate, name, value)
+    await db_sess.commit()
+    await db_sess.refresh(rate)
+    return rate
+
+
 async def bulk_load_rates(
     db_sess: AsyncSession,
     rates_dict: dict,
