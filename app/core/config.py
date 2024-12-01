@@ -1,5 +1,9 @@
+from pathlib import Path
+
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).parent.parent
 
 
 class RunConfig(BaseModel):
@@ -16,6 +20,10 @@ class DBConfig(BaseModel):
     max_overflow: int = 2
 
 
+class ImportConfig(BaseModel):
+    path: Path = BASE_DIR / "imports" / "import_rates.json"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=[".env.template", ".env"],
@@ -25,6 +33,7 @@ class Settings(BaseSettings):
     )
 
     run: RunConfig = RunConfig()
+    import_: ImportConfig = ImportConfig()
     db: DBConfig
 
 
