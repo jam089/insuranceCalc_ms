@@ -27,7 +27,14 @@ async def get_insurance_rate_for_calc(
     return rate
 
 
-async def create_rate(
+async def get_insurance_rate_by_id(
+    db_sess: AsyncSession,
+    rare_id: int,
+) -> Rate | None:
+    rate = await db_sess.get(Rate, rare_id)
+    return rate
+
+
 async def create_insurance_rate(
     db_sess: AsyncSession,
     rate_in: BaseModel,
