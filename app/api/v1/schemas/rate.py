@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseRate(BaseModel):
@@ -21,3 +21,9 @@ class UpdateRatePartial(BaseRate):
     date: date | None = None
     cargo_type: str | None = None
     rate: int | None = None
+
+
+class ViewRate(BaseRate):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
