@@ -13,4 +13,5 @@ class CalcRequest(BaseModel):
 
 
 class CalcResponse(BaseModel):
+    request: CalcRequest
     insurance_value: float
