@@ -51,6 +51,14 @@ async def update_rate(
     return rate
 
 
+async def delete_insurance_rate(
+    db_sess: AsyncSession,
+    rate: Rate,
+) -> None:
+    await db_sess.delete(rate)
+    await db_sess.commit()
+
+
 async def bulk_load_rates(
     db_sess: AsyncSession,
     rates_dict: dict,
