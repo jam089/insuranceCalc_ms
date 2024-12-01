@@ -27,6 +27,17 @@ async def get_insurance_rate_for_calc(
     return rate
 
 
+async def create_rate(
+    db_sess: AsyncSession,
+    rate_in: BaseModel,
+) -> Rate:
+    new_rate = Rate(**rate_in.model_dump())
+    db_sess.add(new_rate)
+    await db_sess.commit()
+    await db_sess.refresh(new_rate)
+    return new_rate
+
+
 async def bulk_load_rates(
     db_sess: AsyncSession,
     rates_dict: dict,
