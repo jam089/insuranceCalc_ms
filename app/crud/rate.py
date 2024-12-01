@@ -11,7 +11,7 @@ async def get_insurance_rate_for_calc(
 ) -> Rate | None:
     stmt = select(Rate).where(
         and_(
-            Rate.data == calc_request_in.date,
+            Rate.date == calc_request_in.date,
             Rate.cargo_type == calc_request_in.cargo_type,
         )
     )
