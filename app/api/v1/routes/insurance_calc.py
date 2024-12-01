@@ -22,8 +22,7 @@ async def insurance_calculation(
     )
 
     if rate:
-        insurance_value = calc_in.declared_value * rate.rate
-
+        insurance_value = round(calc_in.declared_value * rate.rate, 2)
         return {
             "request": calc_in,
             "insurance_value": insurance_value,
