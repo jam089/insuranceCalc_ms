@@ -1,8 +1,8 @@
 """create insurance_rates table
 
-Revision ID: d21b4a610a73
+Revision ID: 6859e6dd236e
 Revises: 
-Create Date: 2024-12-01 20:58:13.567604
+Create Date: 2024-12-01 22:50:51.647681
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "d21b4a610a73"
+revision: str = "6859e6dd236e"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,7 +27,7 @@ def upgrade() -> None:
         sa.Column("rate", sa.Float(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("date"),
+        sa.UniqueConstraint("date", "cargo_type", name="uix_date_cargo_type"),
     )
 
 
