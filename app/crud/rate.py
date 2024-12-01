@@ -28,6 +28,7 @@ async def get_insurance_rate_for_calc(
 
 
 async def create_rate(
+async def create_insurance_rate(
     db_sess: AsyncSession,
     rate_in: BaseModel,
 ) -> Rate:
@@ -38,7 +39,7 @@ async def create_rate(
     return new_rate
 
 
-async def update_rate(
+async def update_insurance_rate(
     db_sess: AsyncSession,
     rate: Rate,
     rate_in: BaseModel,
