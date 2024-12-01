@@ -1,15 +1,17 @@
 import logging
 from datetime import datetime
+from datetime import date as datetime_date
+from typing import Sequence
 
 from pydantic import BaseModel
-from sqlalchemy import select, Result, and_
+from sqlalchemy import select, Result, and_, ScalarResult
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 
 from db.models import Rate
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("uvicorn")
 
 
 async def get_insurance_rate_for_calc(
@@ -33,6 +35,16 @@ async def get_insurance_rate_by_id(
 ) -> Rate | None:
     rate = await db_sess.get(Rate, rare_id)
     return rate
+
+
+async def get_insurance_rate_by_date(
+    db_sess: AsyncSession,
+    date: datetime_date,
+) -> Sequence[Rate]:
+    stmt = select(Rate).where(Rate.date == date)
+    result = await db_sess.execute(stmt)
+    rate_list = result.scalars().all()
+    return rate_list
 
 
 async def create_insurance_rate(
