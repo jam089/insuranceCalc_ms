@@ -108,6 +108,6 @@ async def bulk_load_rates(
         return True
 
     except SQLAlchemyError as ex:
-        logger.critical(ex.args)
+        logger.error(ex.args)
         await db_sess.rollback()
         return False
