@@ -1,8 +1,15 @@
+import logging
+from datetime import datetime
+
 from pydantic import BaseModel
 from sqlalchemy import select, Result, and_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.dialects.postgresql import insert
 
 from db.models import Rate
+
+logger = logging.getLogger(__name__)
 
 
 async def get_insurance_rate_for_calc(
@@ -18,3 +25,37 @@ async def get_insurance_rate_for_calc(
     result: Result = await db_sess.execute(stmt)
     rate = result.scalar()
     return rate
+
+
+async def bulk_load_rates(
+    db_sess: AsyncSession,
+    rates_dict: dict,
+) -> bool:
+    try:
+        rates_of_date_list = []
+        for date, rates_of_date in rates_dict.items():  # type: (str, list)
+            rates_of_date_list.extend(
+                [
+                    {
+                        "date": datetime.strptime(date, "%Y-%m-%d").date(),
+                        "cargo_type": rate_item.get("cargo_type"),
+                        "rate": float(rate_item.get("rate")),
+                    }
+                    for rate_item in rates_of_date
+                ]
+            )
+        stmt = insert(Rate).values(rates_of_date_list)
+        stmt = stmt.on_conflict_do_update(
+            index_elements=["date", "cargo_type"],
+            set_={
+                "rate": stmt.excluded.rate,
+            },
+        )
+        await db_sess.execute(stmt)
+        await db_sess.commit()
+        return True
+
+    except SQLAlchemyError as ex:
+        logger.critical(ex.args)
+        await db_sess.rollback()
+        return False
