@@ -1,10 +1,10 @@
-from datetime import date
+from datetime import date as datetime_date
 
 from pydantic import BaseModel, ConfigDict
 
 
 class BaseRate(BaseModel):
-    date: date
+    date: datetime_date
     cargo_type: str
     rate: float
 
@@ -18,7 +18,7 @@ class UpdateRate(BaseRate):
 
 
 class UpdateRatePartial(BaseRate):
-    date: date | None = None
+    date: datetime_date | None = None
     cargo_type: str | None = None
     rate: int | None = None
 
