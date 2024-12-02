@@ -71,3 +71,11 @@ async def update_rate_partial(
         rate_in,
         partial=True,
     )
+
+
+@router.delete("/{rate_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_rate(
+    db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    rate: Annotated[Rate, Depends(deps.get_rate)],
+):
+    await rate_crud.delete_insurance_rate(db_sess, rate)
