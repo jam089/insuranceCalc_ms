@@ -31,9 +31,9 @@ async def get_insurance_rate_for_calc(
 
 async def get_insurance_rate_by_id(
     db_sess: AsyncSession,
-    rare_id: int,
+    rate_id: int,
 ) -> Rate | None:
-    rate = await db_sess.get(Rate, rare_id)
+    rate = await db_sess.get(Rate, rate_id)
     return rate
 
 
