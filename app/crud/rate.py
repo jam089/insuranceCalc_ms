@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 
 from db.models import Rate
+from services import kafka
 
 logger = logging.getLogger("uvicorn")
 
@@ -26,6 +27,13 @@ async def get_insurance_rate_for_calc(
     )
     result: Result = await db_sess.execute(stmt)
     rate = result.scalar()
+
+    await kafka.producer.k_logger(
+        user_id=calc_request_in.user_id,
+        date_time=datetime.now(),
+        crud_action="get_insurance_rate_for_calc",
+    )
+
     return rate
 
 
@@ -55,6 +63,12 @@ async def create_insurance_rate(
     db_sess.add(new_rate)
     await db_sess.commit()
     await db_sess.refresh(new_rate)
+
+    await kafka.producer.k_logger(
+        date_time=datetime.now(),
+        crud_action="create_insurance_rate",
+    )
+
     return new_rate
 
 
@@ -68,6 +82,12 @@ async def update_insurance_rate(
         setattr(rate, name, value)
     await db_sess.commit()
     await db_sess.refresh(rate)
+
+    await kafka.producer.k_logger(
+        date_time=datetime.now(),
+        crud_action="update_insurance_rate",
+    )
+
     return rate
 
 
@@ -77,6 +97,11 @@ async def delete_insurance_rate(
 ) -> None:
     await db_sess.delete(rate)
     await db_sess.commit()
+
+    await kafka.producer.k_logger(
+        date_time=datetime.now(),
+        crud_action="delete_insurance_rate",
+    )
 
 
 async def bulk_load_rates(
@@ -105,6 +130,11 @@ async def bulk_load_rates(
         )
         await db_sess.execute(stmt)
         await db_sess.commit()
+
+        await kafka.producer.k_logger(
+            date_time=datetime.now(), crud_action="bulk_load_rates"
+        )
+
         return True
 
     except SQLAlchemyError as ex:
