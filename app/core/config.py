@@ -24,6 +24,11 @@ class ImportConfig(BaseModel):
     path: Path = BASE_DIR / "imports" / "import_rates.json"
 
 
+class KafkaLoggerConfig(BaseModel):
+    bootstrap_servers: str
+    topic: str
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=[".env.template", ".env"],
@@ -35,6 +40,7 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     import_: ImportConfig = ImportConfig()
     db: DBConfig
+    kafka_logger: KafkaLoggerConfig
 
 
 settings = Settings()
