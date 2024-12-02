@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import APIRouter, status, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.v1.schemas import ViewRate, CreateRate, UpdateRate
+from api.v1.schemas import ViewRate, CreateRate, UpdateRate, UpdateRatePartial
 from db import db_helper
 from db.models import Rate
 from api.v1 import deps
@@ -57,3 +57,17 @@ async def update_rate(
 
     response.status_code = status.HTTP_201_CREATED
     return await rate_crud.create_insurance_rate(db_sess, rate_in)
+
+
+@router.patch("/{rate_id}/", response_model=ViewRate)
+async def update_rate_partial(
+    db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    rate: Annotated[Rate, Depends(deps.get_rate)],
+    rate_in: UpdateRatePartial,
+):
+    return await rate_crud.update_insurance_rate(
+        db_sess,
+        rate,
+        rate_in,
+        partial=True,
+    )
