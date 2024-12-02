@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.schemas import ViewRate
 from db import db_helper
+from db.models import Rate
+from api.v1 import deps
 from crud import rate as rate_crud
 
 
@@ -25,3 +27,10 @@ async def get_rate_by_date(
         db_sess,
         date=datetime.strptime(date, "%Y-%m-%d").date(),
     )
+
+
+@router.get("/{rate_id}/", response_model=ViewRate)
+async def get_rate_by_id(
+    rate: Annotated[Rate, Depends(deps.get_rate)],
+):
+    return rate
