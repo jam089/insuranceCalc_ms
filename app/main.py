@@ -15,11 +15,15 @@ logger = logging.getLogger("uvicorn")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    try:
-        await kafka.producer.start()
-        asyncio.create_task(kafka.producer.batch_sender())
-    except KafkaConnectionError as ex:
-        logger.critical(ex.args)
+    for counter in range(0, 16):
+        try:
+            await kafka.producer.start()
+            asyncio.create_task(kafka.producer.batch_sender())
+            break
+        except KafkaConnectionError as ex:
+            await kafka.producer.stop()
+            logger.error(f"{counter}: {ex.args}")
+            await asyncio.sleep(delay=3)
     yield
     await kafka.producer.stop()
 
