@@ -1,5 +1,23 @@
 services:
 
+  insurance_calc:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    container_name: insurance_calc
+    env_file:
+      - ./app/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pg
+      - kafka-controller
+      - kafka-broker
+    networks:
+      - pg-network
+      - kafka-network
+
+
   pg:
     image: postgres
     environment:
@@ -8,6 +26,8 @@ services:
       POSTGRES_PASSWORD: pgadmin
     ports:
       - "5432:5432"
+    networks:
+      - pg-network
 
   adminer:
     image: adminer
@@ -15,6 +35,8 @@ services:
       - "8080:8080"
     profiles:
       - optional_ui
+    networks:
+      - pg-network
 
   kafka-controller:
     image: apache/kafka:latest
@@ -69,4 +91,6 @@ services:
 
 networks:
   kafka-network:
+    driver: bridge
+  pg-network:
     driver: bridge
