@@ -5,7 +5,7 @@
 ### deployment:
 1) clone the repo and go to the repo dir
 ```bash
-   git clone <URL_репозитория>
+   git clone https://github.com/jam089/insuranceCalc.git <dir_for_repo>
    cd <repo_dir>
 ```
 2) replase or edit ./app/imports/import_rates.json for import rates
