@@ -1,9 +1,7 @@
-import asyncio
 import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
-from aiokafka.errors import KafkaConnectionError
 from fastapi import FastAPI
 
 from core import settings
