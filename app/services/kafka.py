@@ -61,13 +61,14 @@ class KafkaProducer:
         date_time: datetime,
         user_id: int | None = None,
     ):
-        msg = {
-            "action": crud_action,
-            "date_time": date_time.strftime("%Y-%m-%d"),
-        }
-        if user_id:
-            msg.update({"user_id": user_id})
-        await self.massage_queue.put(json.dumps(msg).encode(encoding="utf-8"))
+        if settings.kafka_logger.enable:
+            msg = {
+                "action": crud_action,
+                "date_time": date_time.strftime("%Y-%m-%d"),
+            }
+            if user_id:
+                msg.update({"user_id": user_id})
+            await self.massage_queue.put(json.dumps(msg).encode(encoding="utf-8"))
 
     async def _new_topic(self):
         try:

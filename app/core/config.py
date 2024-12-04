@@ -27,6 +27,7 @@ class ImportConfig(BaseModel):
 class KafkaLoggerConfig(BaseModel):
     bootstrap_servers: str
     topic: str
+    enable: bool = False
 
 
 class Settings(BaseSettings):
