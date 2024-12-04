@@ -11,10 +11,10 @@ from db.models import Rate
 router = APIRouter(prefix="/insurance_calculation", tags=["Insurance Calculation"])
 
 
-@router.post("/", response_model=CalcResponse)
+@router.get("/", response_model=CalcResponse)
 async def insurance_calculation(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    calc_in: CalcRequest,
+    calc_in: CalcRequest = Depends(),
 ):
     rate: Rate = await get_insurance_rate_for_calc(
         db_sess,
