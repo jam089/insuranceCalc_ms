@@ -24,6 +24,17 @@ async def get_rate_by_id(
     return rate
 
 
+@router.get("/", response_model=Sequence[ViewRate])
+async def get_rate_by_date(
+    db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    date: str,
+):
+    return await rate_crud.get_insurance_rate_by_date(
+        db_sess,
+        date=datetime.strptime(date, "%Y-%m-%d").date(),
+    )
+
+
 @router.post("/", response_model=ViewRate, status_code=status.HTTP_201_CREATED)
 async def create_rate(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
