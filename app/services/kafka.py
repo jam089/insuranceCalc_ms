@@ -5,6 +5,7 @@ from datetime import datetime
 from random import choice
 
 from aiokafka import AIOKafkaProducer
+from aiokafka.errors import KafkaConnectionError
 from aiokafka.producer.message_accumulator import BatchBuilder
 from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 
@@ -27,16 +28,26 @@ class KafkaProducer:
         self.massage_queue = asyncio.Queue()
 
     async def start(self):
-        self.producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
-        self.admin = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
-        await self.producer.start()
-        metadata = await self.producer.client.fetch_all_metadata()
-        if self.topic not in metadata.topics():
-            await self._new_topic()
-        self.batch = self.producer.create_batch()
+        if settings.kafka_logger.enable:
+            self.producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
+            self.admin = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
+            for counter in range(0, 10):
+                try:
+                    await self.producer.start()
+                    asyncio.create_task(self.batch_sender())
+                    break
+                except KafkaConnectionError as ex:
+                    await self.stop()
+                    logger.error(f"{counter}: {ex.args}")
+                    await asyncio.sleep(delay=3)
+            metadata = await self.producer.client.fetch_all_metadata()
+            if self.topic not in metadata.topics():
+                await self._new_topic()
+            self.batch = self.producer.create_batch()
 
     async def stop(self):
-        await self.producer.stop()
+        if settings.kafka_logger.enable:
+            await self.producer.stop()
 
     async def batch_sender(self):
         while True:
