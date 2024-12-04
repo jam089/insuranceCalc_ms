@@ -8,7 +8,7 @@ from api.v1.schemas import CalcResponse, CalcRequest
 from crud.rate import get_insurance_rate_for_calc
 from db.models import Rate
 
-router = APIRouter(prefix="/calc", tags=["Insurance Calculation"])
+router = APIRouter(prefix="/insurance_calculation", tags=["Insurance Calculation"])
 
 
 @router.post("/", response_model=CalcResponse)
