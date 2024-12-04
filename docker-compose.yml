@@ -71,6 +71,8 @@ services:
       KAFKA_NUM_PARTITIONS: 3
     ports:
       - "9092:9092"
+    depends_on:
+      - kafka-controller
     networks:
       - kafka-network
 
