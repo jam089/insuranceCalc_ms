@@ -4,7 +4,7 @@ from datetime import date as datetime_date
 from typing import Sequence
 
 from pydantic import BaseModel
-from sqlalchemy import select, Result, and_, ScalarResult
+from sqlalchemy import select, Result, and_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
