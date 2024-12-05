@@ -7,7 +7,7 @@ from .base import Base
 
 
 class InsuranceActionLog(Base):
-    __tablename__ = "insurance_action_log"
+    __tablename__ = "insurance_action_logs"
 
     user_id: Mapped[int | None] = mapped_column(default=None)
     action: Mapped[str]
