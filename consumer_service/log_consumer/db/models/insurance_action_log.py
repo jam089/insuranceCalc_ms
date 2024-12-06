@@ -13,6 +13,6 @@ class InsuranceActionLog(Base):
     action: Mapped[str]
     date_time: Mapped[datetime] = mapped_column(DateTime)
 
-    __mapper_args__ = {
-        "order_by": date_time.desc(),
-    }
+    @classmethod
+    def __default_order_by__(cls):
+        return [cls.date_time.desc()]
