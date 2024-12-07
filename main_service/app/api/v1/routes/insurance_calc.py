@@ -3,10 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db import db_helper
-from api.v1.schemas import CalcResponse, CalcRequest
-from crud.rate import get_insurance_rate_for_calc
-from db.models import Rate
+from app.db import db_helper
+from app.api.v1.schemas import CalcResponse, CalcRequest
+from app.crud.rate import get_insurance_rate_for_calc
+from app.db.models import Rate
 
 router = APIRouter(prefix="/insurance_calculation", tags=["Insurance Calculation"])
 

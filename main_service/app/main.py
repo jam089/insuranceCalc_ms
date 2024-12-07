@@ -4,9 +4,9 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from core import settings
-from api import router as api_router
-from services import kafka
+from app.core import settings
+from app.api import router as api_router
+from app.services import kafka
 
 logger = logging.getLogger("uvicorn")
 

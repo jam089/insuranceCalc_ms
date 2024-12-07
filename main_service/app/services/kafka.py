@@ -9,7 +9,7 @@ from aiokafka.errors import KafkaConnectionError
 from aiokafka.producer.message_accumulator import BatchBuilder
 from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 
-from core import settings
+from app.core import settings
 
 logger = logging.getLogger("uvicorn")
 
@@ -19,6 +19,8 @@ class KafkaProducer:
         self,
         bootstrap_servers: str,
         topic: str,
+        max_batch_size: int = 16384,
+        linger_ms: int = 0,
     ):
         self.bootstrap_servers = bootstrap_servers
         self.producer = None
@@ -26,10 +28,16 @@ class KafkaProducer:
         self.topic = topic
         self.batch: BatchBuilder | None = None
         self.massage_queue = asyncio.Queue()
+        self.max_batch_size = max_batch_size
+        self.linger_ms = linger_ms
 
     async def start(self):
         if settings.kafka_logger.enable:
-            self.producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
+            self.producer = AIOKafkaProducer(
+                bootstrap_servers=self.bootstrap_servers,
+                max_batch_size=self.max_batch_size,
+                linger_ms=self.linger_ms,
+            )
             self.admin = AIOKafkaAdminClient(bootstrap_servers=self.bootstrap_servers)
             for counter in range(0, 10):
                 try:
@@ -101,4 +109,6 @@ class KafkaProducer:
 producer = KafkaProducer(
     bootstrap_servers=str(settings.kafka_logger.bootstrap_servers),
     topic=settings.kafka_logger.topic,
+    max_batch_size=settings.kafka_logger.max_batch_size,
+    linger_ms=settings.kafka_logger.linger_ms,
 )

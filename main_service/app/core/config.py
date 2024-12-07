@@ -28,6 +28,8 @@ class KafkaLoggerConfig(BaseModel):
     bootstrap_servers: str
     topic: str
     enable: bool = False
+    max_batch_size: int = 1024
+    linger_ms: int = 10000
 
 
 class Settings(BaseSettings):
