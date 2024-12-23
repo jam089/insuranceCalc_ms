@@ -1,10 +1,10 @@
 services:
 
-  insurance_calc:
+  insurance_calc_ms:
     build:
       context: .
       dockerfile: main_service/app/Dockerfile
-    container_name: insurance_calc
+    container_name: insurance_calc_ms
     env_file:
       - main_service/app/.env
     ports:
@@ -13,6 +13,23 @@ services:
       - pg
       - kafka-controller
       - kafka-broker
+    networks:
+      - pg-network
+      - kafka-network
+
+
+  logger:
+    build:
+      context: consumer_service/log_consumer/
+    container_name: logger
+#    command: ["tail", "-f", "/dev/null"]
+    ports:
+      - "8010:8000"
+#    depends_on:
+#      - insurance_calc_ms
+#      - pg
+#      - kafka-controller
+#      - kafka-broker
     networks:
       - pg-network
       - kafka-network
