@@ -3,10 +3,10 @@ services:
   insurance_calc_ms:
     build:
       context: .
-      dockerfile: main_service/app/Dockerfile
+      dockerfile: app/Dockerfile
     container_name: insurance_calc_ms
     env_file:
-      - main_service/app/.env
+      - app/.env
     ports:
       - "8000:8000"
     depends_on:
