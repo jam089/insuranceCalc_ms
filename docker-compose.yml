@@ -6,7 +6,7 @@ services:
       dockerfile: app/Dockerfile
     container_name: insurance_calc_ms
     env_file:
-      - app/.env
+      - ./docker_compose_envs/insurance_calc.env
     ports:
       - "8000:8000"
     depends_on:
@@ -38,7 +38,7 @@ services:
   pg:
     image: postgres
     environment:
-      POSTGRES_DB: insuranceCalc
+      POSTGRES_DB: insurance
       POSTGRES_USER: pgadmin
       POSTGRES_PASSWORD: pgadmin
     ports:
@@ -51,7 +51,7 @@ services:
     ports:
       - "8080:8080"
     profiles:
-      - optional_ui
+      - op_ui
     networks:
       - pg-network
 
@@ -106,7 +106,7 @@ services:
     networks:
       - kafka-network
     profiles:
-      - optional_ui
+      - op_ui
 
 networks:
   kafka-network:
