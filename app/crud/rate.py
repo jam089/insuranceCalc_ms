@@ -9,8 +9,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 
-from app.db.models import Rate
-from app.services import kafka
+from db.models import Rate
+from services import kafka
 
 logger = logging.getLogger("uvicorn")
 

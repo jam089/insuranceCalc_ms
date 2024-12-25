@@ -3,10 +3,10 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import db_helper
-from app.crud.rate import bulk_load_rates
-from app.utils.files_utils import json_read
-from app.core import settings
+from db import db_helper
+from crud.rate import bulk_load_rates
+from utils.files_utils import json_read
+from core import settings
 
 router = APIRouter(prefix="/administration", tags=["Administration"])
 

@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db import db_helper
-from app.crud.rate import get_insurance_rate_by_id
-from app.db.models import Rate
+from db import db_helper
+from crud.rate import get_insurance_rate_by_id
+from db.models import Rate
 
 
 async def get_rate(

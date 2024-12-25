@@ -9,7 +9,7 @@ from aiokafka.errors import KafkaConnectionError
 from aiokafka.producer.message_accumulator import BatchBuilder
 from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 
-from app.core import settings
+from core import settings
 
 logger = logging.getLogger("uvicorn")
 

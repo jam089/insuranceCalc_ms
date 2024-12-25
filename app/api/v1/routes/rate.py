@@ -5,11 +5,11 @@ from datetime import datetime
 from fastapi import APIRouter, status, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.schemas import ViewRate, CreateRate, UpdateRate, UpdateRatePartial
-from app.db import db_helper
-from app.db.models import Rate
-from app.api.v1 import deps
-from app.crud import rate as rate_crud
+from api.v1.schemas import ViewRate, CreateRate, UpdateRate, UpdateRatePartial
+from db import db_helper
+from db.models import Rate
+from api.v1 import deps
+from crud import rate as rate_crud
 
 
 logger = logging.getLogger("uvicorn")
