@@ -17,24 +17,6 @@ services:
       - pg-network
       - kafka-network
 
-
-  logger:
-    build:
-      context: consumer_service/log_consumer/
-    container_name: logger
-#    command: ["tail", "-f", "/dev/null"]
-    ports:
-      - "8010:8000"
-#    depends_on:
-#      - insurance_calc_ms
-#      - pg
-#      - kafka-controller
-#      - kafka-broker
-    networks:
-      - pg-network
-      - kafka-network
-
-
   pg:
     image: postgres
     environment:
