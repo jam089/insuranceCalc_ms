@@ -1,11 +1,10 @@
 from datetime import date
 
 import pytest
+from crud.rate import bulk_load_rates
 from pytest_mock import MockFixture
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import SQLAlchemyError
-
-from crud.rate import bulk_load_rates
 
 test_json = {
     "2024-11-30": [
@@ -43,7 +42,7 @@ async def test_bulk_load_rates(mocker: MockFixture) -> None:
 
 
 @pytest.mark.asyncio
-async def test_bulk_load_rates_rolls_back_on_error(mocker) -> None:
+async def test_bulk_load_rates_rolls_back_on_error(mocker: MockFixture) -> None:
     fake_sess = mocker.AsyncMock()
     mocker.patch("app.crud.rate.kafka.producer.k_logger")
     fake_sess.execute.side_effect = SQLAlchemyError("boom")

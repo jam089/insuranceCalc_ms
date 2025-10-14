@@ -1,7 +1,7 @@
 import logging
 from datetime import date as datetime_date
 from datetime import datetime
-from typing import Sequence, Any
+from typing import Any, Sequence
 
 from db.models import Rate
 from services import kafka
