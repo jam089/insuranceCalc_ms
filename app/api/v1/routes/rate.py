@@ -1,16 +1,15 @@
 import logging
-from typing import Sequence, Annotated
 from datetime import datetime
+from typing import Annotated, Sequence
 
-from fastapi import APIRouter, status, Depends, Response
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from api.v1.schemas import ViewRate, CreateRate, UpdateRate, UpdateRatePartial
+from crud import rate as rate_crud
 from db import db_helper
 from db.models import Rate
-from api.v1 import deps
-from crud import rate as rate_crud
+from fastapi import APIRouter, Depends, Response, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.v1 import deps
+from api.v1.schemas import CreateRate, UpdateRate, UpdateRatePartial, ViewRate
 
 logger = logging.getLogger("uvicorn")
 

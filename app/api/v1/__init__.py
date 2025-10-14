@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .routes.insurance_calc import router as insurance_router
 from .routes.administration import router as admin_router
+from .routes.insurance_calc import router as insurance_router
 from .routes.rate import router as rate_router
 
 router = APIRouter(prefix="/v1")

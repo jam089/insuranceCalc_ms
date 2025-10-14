@@ -1,14 +1,13 @@
 import asyncio
-import logging
 import json
+import logging
 from datetime import datetime
 from random import choice
 
 from aiokafka import AIOKafkaProducer
+from aiokafka.admin import AIOKafkaAdminClient, NewTopic
 from aiokafka.errors import KafkaConnectionError
 from aiokafka.producer.message_accumulator import BatchBuilder
-from aiokafka.admin import AIOKafkaAdminClient, NewTopic
-
 from core import settings
 
 logger = logging.getLogger("uvicorn")

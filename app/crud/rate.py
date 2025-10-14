@@ -1,16 +1,15 @@
 import logging
-from datetime import datetime
 from datetime import date as datetime_date
+from datetime import datetime
 from typing import Sequence
 
-from sqlalchemy import select, Result, and_
+from api.v1.schemas import CalcRequest, CreateRate, UpdateRate, UpdateRatePartial
+from db.models import Rate
+from services import kafka
+from sqlalchemy import Result, and_, select
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.dialects.postgresql import insert
-
-from db.models import Rate
-from api.v1.schemas import CalcRequest, CreateRate, UpdateRate, UpdateRatePartial
-from services import kafka
 
 logger = logging.getLogger("uvicorn")
 

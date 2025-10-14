@@ -1,11 +1,10 @@
 from typing import Annotated
 
+from crud.rate import get_insurance_rate_by_id
+from db import db_helper
+from db.models import Rate
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from db import db_helper
-from crud.rate import get_insurance_rate_by_id
-from db.models import Rate
 
 
 async def get_rate(

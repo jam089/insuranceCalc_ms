@@ -1,13 +1,12 @@
 from typing import AsyncGenerator
 
+from core import settings
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
-    create_async_engine,
     AsyncSession,
     async_sessionmaker,
+    create_async_engine,
 )
-
-from core import settings
 
 
 class DatabaseHelper:

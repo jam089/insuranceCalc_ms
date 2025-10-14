@@ -1,12 +1,12 @@
 from typing import Annotated
 
+from crud.rate import get_insurance_rate_for_calc
+from db import db_helper
+from db.models import Rate
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db import db_helper
-from api.v1.schemas import CalcResponse, CalcRequest
-from crud.rate import get_insurance_rate_for_calc
-from db.models import Rate
+from api.v1.schemas import CalcRequest, CalcResponse
 
 router = APIRouter(prefix="/insurance_calculation", tags=["Insurance Calculation"])
 
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/insurance_calculation", tags=["Insurance Calculation
 @router.get("/", response_model=CalcResponse)
 async def insurance_calculation(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-    calc_in: CalcRequest = Depends(),
+    calc_in: CalcRequest = Depends(),  # noqa: B008
 ) -> dict[str, CalcRequest | float]:
     rate: Rate | None = await get_insurance_rate_for_calc(
         db_sess,

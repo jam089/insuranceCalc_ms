@@ -1,12 +1,11 @@
 from typing import Annotated
 
+from core import settings
+from crud.rate import bulk_load_rates
+from db import db_helper
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from db import db_helper
-from crud.rate import bulk_load_rates
 from utils.files_utils import json_read
-from core import settings
 
 router = APIRouter(prefix="/administration", tags=["Administration"])
 
