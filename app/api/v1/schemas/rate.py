@@ -17,10 +17,10 @@ class UpdateRate(BaseRate):
     pass
 
 
-class UpdateRatePartial(BaseRate):
+class UpdateRatePartial(BaseModel):
     date: datetime_date | None = None
     cargo_type: str | None = None
-    rate: int | None = None
+    rate: float | None = None
 
 
 class ViewRate(BaseRate):

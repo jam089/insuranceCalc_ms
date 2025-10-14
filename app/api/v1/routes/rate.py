@@ -20,7 +20,7 @@ router = APIRouter(prefix="/rates", tags=["Insurance Rates"])
 @router.get("/{rate_id}/", response_model=ViewRate)
 async def get_rate_by_id(
     rate: Annotated[Rate, Depends(deps.get_rate)],
-):
+) -> Rate:
     return rate
 
 
@@ -28,7 +28,7 @@ async def get_rate_by_id(
 async def get_rate_by_date(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     date: str,
-):
+) -> Sequence[Rate]:
     return await rate_crud.get_insurance_rate_by_date(
         db_sess,
         date=datetime.strptime(date, "%Y-%m-%d").date(),
@@ -39,7 +39,7 @@ async def get_rate_by_date(
 async def create_rate(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     rate_in: CreateRate,
-):
+) -> Rate:
     return await rate_crud.create_insurance_rate(db_sess, rate_in)
 
 
@@ -49,7 +49,7 @@ async def update_rate(
     rate_id: int,
     rate_in: UpdateRate,
     response: Response,
-):
+) -> Rate:
     rate = await rate_crud.get_insurance_rate_by_id(db_sess, rate_id)
     if rate:
         return await rate_crud.update_insurance_rate(db_sess, rate, rate_in)
@@ -63,7 +63,7 @@ async def update_rate_partial(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     rate: Annotated[Rate, Depends(deps.get_rate)],
     rate_in: UpdateRatePartial,
-):
+) -> Rate:
     return await rate_crud.update_insurance_rate(
         db_sess,
         rate,
@@ -76,5 +76,5 @@ async def update_rate_partial(
 async def delete_rate(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     rate: Annotated[Rate, Depends(deps.get_rate)],
-):
+) -> None:
     await rate_crud.delete_insurance_rate(db_sess, rate)

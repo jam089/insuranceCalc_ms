@@ -15,8 +15,8 @@ router = APIRouter(prefix="/insurance_calculation", tags=["Insurance Calculation
 async def insurance_calculation(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     calc_in: CalcRequest = Depends(),
-):
-    rate: Rate = await get_insurance_rate_for_calc(
+) -> dict[str, CalcRequest | float]:
+    rate: Rate | None = await get_insurance_rate_for_calc(
         db_sess,
         calc_request_in=calc_in,
     )

@@ -23,15 +23,15 @@ class KafkaProducer:
         linger_ms: int = 0,
     ):
         self.bootstrap_servers = bootstrap_servers
-        self.producer = None
-        self.admin = None
+        self.producer: AIOKafkaProducer | None = None
+        self.admin: AIOKafkaAdminClient | None = None
         self.topic = topic
         self.batch: BatchBuilder | None = None
-        self.massage_queue = asyncio.Queue()
+        self.massage_queue: asyncio.Queue = asyncio.Queue()
         self.max_batch_size = max_batch_size
         self.linger_ms = linger_ms
 
-    async def start(self):
+    async def start(self) -> None:
         if settings.kafka_logger.enable:
             self.producer = AIOKafkaProducer(
                 bootstrap_servers=self.bootstrap_servers,
@@ -53,16 +53,21 @@ class KafkaProducer:
                 await self._new_topic()
             self.batch = self.producer.create_batch()
 
-    async def stop(self):
-        if settings.kafka_logger.enable:
+    async def stop(self) -> None:
+        if settings.kafka_logger.enable and self.producer:
             await self.producer.stop()
 
-    async def batch_sender(self):
+    async def batch_sender(self) -> None:
         while True:
             try:
                 msg = await asyncio.wait_for(self.massage_queue.get(), timeout=15)
-                metadata = self.batch.append(key=None, value=msg, timestamp=None)
-                if metadata is None:
+
+                metadata = (
+                    self.batch.append(key=None, value=msg, timestamp=None)
+                    if self.batch
+                    else None
+                )
+                if metadata is None and self.producer:
                     partitions = await self.producer.partitions_for(self.topic)
                     chosen_partition = choice(tuple(partitions))
                     await self.producer.send_batch(
@@ -79,31 +84,32 @@ class KafkaProducer:
         crud_action: str,
         date_time: datetime,
         user_id: int | None = None,
-    ):
+    ) -> None:
         if settings.kafka_logger.enable:
             msg = {
                 "action": crud_action,
                 "date_time": date_time.strftime("%Y-%m-%d"),
             }
             if user_id:
-                msg.update({"user_id": user_id})
+                msg.update(user_id=str(user_id))
             await self.massage_queue.put(json.dumps(msg).encode(encoding="utf-8"))
 
-    async def _new_topic(self):
-        try:
-            await self.admin.start()
+    async def _new_topic(self) -> None:
+        if self.admin:
+            try:
+                await self.admin.start()
 
-            new_topic = NewTopic(
-                name=self.topic,
-                num_partitions=3,
-                replication_factor=1,
-            )
+                new_topic = NewTopic(
+                    name=self.topic,
+                    num_partitions=3,
+                    replication_factor=1,
+                )
 
-            await self.admin.create_topics([new_topic])
-        except KeyError as ex:
-            logger.error(ex.args)
-        finally:
-            await self.admin.close()
+                await self.admin.create_topics([new_topic])
+            except KeyError as ex:
+                logger.error(ex.args)
+            finally:
+                await self.admin.close()
 
 
 producer = KafkaProducer(

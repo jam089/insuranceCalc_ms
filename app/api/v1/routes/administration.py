@@ -14,7 +14,7 @@ router = APIRouter(prefix="/administration", tags=["Administration"])
 @router.get("/import_rates/", status_code=status.HTTP_204_NO_CONTENT)
 async def import_rates(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-):
+) -> None:
     rates_dict = json_read(settings.import_.path)
     if not await bulk_load_rates(db_sess, rates_dict):
         raise HTTPException(

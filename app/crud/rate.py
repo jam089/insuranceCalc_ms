@@ -3,13 +3,13 @@ from datetime import datetime
 from datetime import date as datetime_date
 from typing import Sequence
 
-from pydantic import BaseModel
 from sqlalchemy import select, Result, and_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
 
 from db.models import Rate
+from api.v1.schemas import CalcRequest, CreateRate, UpdateRate, UpdateRatePartial
 from services import kafka
 
 logger = logging.getLogger("uvicorn")
@@ -17,7 +17,7 @@ logger = logging.getLogger("uvicorn")
 
 async def get_insurance_rate_for_calc(
     db_sess: AsyncSession,
-    calc_request_in: BaseModel,
+    calc_request_in: CalcRequest,
 ) -> Rate | None:
     stmt = select(Rate).where(
         and_(
@@ -57,7 +57,7 @@ async def get_insurance_rate_by_date(
 
 async def create_insurance_rate(
     db_sess: AsyncSession,
-    rate_in: BaseModel,
+    rate_in: CreateRate | UpdateRate,
 ) -> Rate:
     new_rate = Rate(**rate_in.model_dump())
     db_sess.add(new_rate)
@@ -75,7 +75,7 @@ async def create_insurance_rate(
 async def update_insurance_rate(
     db_sess: AsyncSession,
     rate: Rate,
-    rate_in: BaseModel,
+    rate_in: UpdateRate | UpdateRatePartial,
     partial: bool = False,
 ) -> Rate:
     for name, value in rate_in.model_dump(exclude_unset=partial).items():
