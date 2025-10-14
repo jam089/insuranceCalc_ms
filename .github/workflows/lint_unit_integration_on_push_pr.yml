@@ -1,0 +1,77 @@
+name: Push/PR to main. Lint, unit, integration.
+on:
+  push:
+    branches: ["main"]
+    paths-ignore:
+      - tests/
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container: python:3.12.10
+    if: github.event_name != 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          pip install poetry
+          poetry install --with dev
+
+      - name: Black checking
+        run: poetry run black --check .
+
+      - name: Ruff checking
+        run: poetry run ruff check . --output-format=github
+
+      - name: MyPy checking
+        run: poetry run mypy . --junit-xml=mypy-report.xml
+
+      - name: Upload test report
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: mypy-report.xml
+          require_tests: true
+
+  unit:
+    runs-on: ubuntu-latest
+    container: python:3.12.10
+    env:
+      INSURANCE__DB__URL: 'postgresql+asyncpg://pwd:pwd@host:0000/url'
+      INSURANCE__DB__ECHO: 0
+      INSURANCE__DB__ECHO_POOL: 0
+      INSURANCE__KAFKA_LOGGER__BOOTSTRAP_SERVERS: 'host:0000'
+      INSURANCE__KAFKA_LOGGER__TOPIC: ''
+      INSURANCE__KAFKA_LOGGER__ENABLE: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install poetry and deps
+        run: |
+          pip install poetry
+          poetry install --with dev
+      - name: Run unit-tests
+        run: poetry run pytest -m unit -v --junitxml=pytest-results.xml
+      - name: Mark repo as safe
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: pytest-results.xml
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v2.1.1
+        if: always()
+        with:
+          name: Pytest Results
+          path: pytest-results.xml
+          reporter: java-junit
