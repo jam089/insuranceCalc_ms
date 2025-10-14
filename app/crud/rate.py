@@ -1,9 +1,8 @@
 import logging
 from datetime import date as datetime_date
 from datetime import datetime
-from typing import Sequence
+from typing import Sequence, Any
 
-from api.v1.schemas import CalcRequest, CreateRate, UpdateRate, UpdateRatePartial
 from db.models import Rate
 from services import kafka
 from sqlalchemy import Result, and_, select
@@ -16,19 +15,21 @@ logger = logging.getLogger("uvicorn")
 
 async def get_insurance_rate_for_calc(
     db_sess: AsyncSession,
-    calc_request_in: CalcRequest,
+    date: datetime_date,
+    cargo_type: str,
+    user_id: int,
 ) -> Rate | None:
     stmt = select(Rate).where(
         and_(
-            Rate.date == calc_request_in.date,
-            Rate.cargo_type == calc_request_in.cargo_type,
+            Rate.date == date,
+            Rate.cargo_type == cargo_type,
         )
     )
     result: Result = await db_sess.execute(stmt)
     rate = result.scalar()
 
     await kafka.producer.k_logger(
-        user_id=calc_request_in.user_id,
+        user_id=user_id,
         date_time=datetime.now(),
         crud_action="get_insurance_rate_for_calc",
     )
@@ -54,11 +55,8 @@ async def get_insurance_rate_by_date(
     return rate_list
 
 
-async def create_insurance_rate(
-    db_sess: AsyncSession,
-    rate_in: CreateRate | UpdateRate,
-) -> Rate:
-    new_rate = Rate(**rate_in.model_dump())
+async def create_insurance_rate(db_sess: AsyncSession, rate_in: dict[str, Any]) -> Rate:
+    new_rate = Rate(**rate_in)
     db_sess.add(new_rate)
     await db_sess.commit()
     await db_sess.refresh(new_rate)
@@ -74,10 +72,9 @@ async def create_insurance_rate(
 async def update_insurance_rate(
     db_sess: AsyncSession,
     rate: Rate,
-    rate_in: UpdateRate | UpdateRatePartial,
-    partial: bool = False,
+    rate_in: dict[str, Any],
 ) -> Rate:
-    for name, value in rate_in.model_dump(exclude_unset=partial).items():
+    for name, value in rate_in.items():
         setattr(rate, name, value)
     await db_sess.commit()
     await db_sess.refresh(rate)

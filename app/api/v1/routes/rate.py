@@ -39,7 +39,7 @@ async def create_rate(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
     rate_in: CreateRate,
 ) -> Rate:
-    return await rate_crud.create_insurance_rate(db_sess, rate_in)
+    return await rate_crud.create_insurance_rate(db_sess, rate_in.model_dump())
 
 
 @router.put("/{rate_id}/", response_model=ViewRate)
@@ -51,10 +51,14 @@ async def update_rate(
 ) -> Rate:
     rate = await rate_crud.get_insurance_rate_by_id(db_sess, rate_id)
     if rate:
-        return await rate_crud.update_insurance_rate(db_sess, rate, rate_in)
+        return await rate_crud.update_insurance_rate(
+            db_sess,
+            rate,
+            rate_in.model_dump(),
+        )
 
     response.status_code = status.HTTP_201_CREATED
-    return await rate_crud.create_insurance_rate(db_sess, rate_in)
+    return await rate_crud.create_insurance_rate(db_sess, rate_in.model_dump())
 
 
 @router.patch("/{rate_id}/", response_model=ViewRate)
@@ -66,8 +70,7 @@ async def update_rate_partial(
     return await rate_crud.update_insurance_rate(
         db_sess,
         rate,
-        rate_in,
-        partial=True,
+        rate_in.model_dump(exclude_unset=True),
     )
 
 

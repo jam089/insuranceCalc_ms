@@ -18,7 +18,9 @@ async def insurance_calculation(
 ) -> dict[str, CalcRequest | float]:
     rate: Rate | None = await get_insurance_rate_for_calc(
         db_sess,
-        calc_request_in=calc_in,
+        cargo_type=calc_in.cargo_type,
+        date=calc_in.date,
+        user_id=calc_in.user_id,
     )
 
     if rate:
