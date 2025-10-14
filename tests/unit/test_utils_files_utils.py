@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 from utils.files_utils import json_read
 
-
 pytestmark = pytest.mark.unit
 
 
