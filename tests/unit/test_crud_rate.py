@@ -43,7 +43,7 @@ async def test_bulk_load_rates(mocker: MockFixture) -> None:
 
 
 @pytest.mark.asyncio
-async def test_bulk_load_rates_rolls_back_on_error(mocker):
+async def test_bulk_load_rates_rolls_back_on_error(mocker) -> None:
     fake_sess = mocker.AsyncMock()
     mocker.patch("app.crud.rate.kafka.producer.k_logger")
     fake_sess.execute.side_effect = SQLAlchemyError("boom")

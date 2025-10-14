@@ -17,7 +17,7 @@ async def get_insurance_rate_for_calc(
     db_sess: AsyncSession,
     date: datetime_date,
     cargo_type: str,
-    user_id: int,
+    user_id: int | None,
 ) -> Rate | None:
     stmt = select(Rate).where(
         and_(
