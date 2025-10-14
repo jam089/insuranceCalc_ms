@@ -27,6 +27,16 @@ httpx = "^0.28.1"
 factory-boy = "^3.3.3"
 pytest-mock = "^3.15.1"
 
+[tool.pytest.ini_options]
+pythonpath = [
+    ".",
+    "app",
+]
+markers = [
+    "integration: mark tests as integration tests",
+    "unit: mark tests as unit-tests",
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
