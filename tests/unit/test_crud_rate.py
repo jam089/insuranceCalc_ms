@@ -6,6 +6,10 @@ from pytest_mock import MockFixture
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import SQLAlchemyError
 
+
+pytestmark = pytest.mark.unit
+
+
 test_json = {
     "2024-11-30": [
         {"cargo_type": "Glass", "rate": "0.015"},
