@@ -6,7 +6,6 @@ from pytest_mock import MockFixture
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import SQLAlchemyError
 
-
 pytestmark = pytest.mark.unit
 
 
