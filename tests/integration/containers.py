@@ -19,9 +19,11 @@ def compose_containers() -> Generator[DockerCompose, None, None]:
             "insurance_calc_ms": LogMessageWaitStrategy("Application startup complete"),
         }
     )
-    compose.start()
-    yield compose
-    compose.stop()
+    try:
+        compose.start()
+        yield compose
+    finally:
+        compose.stop()
 
 
 @pytest.fixture(scope="package")
