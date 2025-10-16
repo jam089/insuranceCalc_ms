@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from typing import Generator
 
@@ -20,6 +21,8 @@ def compose_containers() -> Generator[DockerCompose, None, None]:
         }
     )
     try:
+        compose.stop()
+        time.sleep(4)
         compose.start()
         yield compose
     finally:
