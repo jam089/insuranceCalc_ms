@@ -75,3 +75,43 @@ jobs:
           name: Pytest Results
           path: pytest-results.xml
           reporter: java-junit
+
+  integration:
+    runs-on: ubuntu-latest
+    env:
+      INSURANCE__DB__URL: ${{ secrets.INSURANCE__DB__URL }}
+      INSURANCE__DB__LOGIN: ${{ secrets.INSURANCE__DB__LOGIN }}
+      INSURANCE__DB__PASS: ${{ secrets.INSURANCE__DB__PASS }}
+      INSURANCE__DB__DB_SCHEMA: ${{ secrets.INSURANCE__DB__DB_SCHEMA }}
+      INSURANCE__DB__ECHO: 0
+      INSURANCE__DB__ECHO_POOL: 0
+      INSURANCE__KAFKA_LOGGER__BOOTSTRAP_SERVERS: ${{ secrets.INSURANCE__KAFKA_LOGGER__BOOTSTRAP_SERVERS }}
+      INSURANCE__KAFKA_LOGGER__TOPIC: ${{ secrets.INSURANCE__KAFKA_LOGGER__TOPIC }}
+      INSURANCE__KAFKA_LOGGER__ENABLE: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12.10'
+      - name: Install poetry and deps
+        run: |
+          pip install "poetry==2.1.2"
+          poetry install --with dev
+      - name: Run integration tests
+        run: poetry run pytest -m integration -v --junitxml=pytest-results.xml
+      - name: Mark repo as safe
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: pytest-results.xml
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v2.1.1
+        if: always()
+        with:
+          name: Pytest Results
+          path: pytest-results.xml
+          reporter: java-junit
