@@ -10,3 +10,6 @@
 .idea/
 venv/
 .git/
+/app/Dockerfile
+/app/imports/*
+!/app/imports/README.md
