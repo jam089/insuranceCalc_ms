@@ -21,6 +21,8 @@ services:
         condition: service_started
       kafka-broker:
         condition: service_started
+    volumes:
+      - ./data:/app/imports:ro
     networks:
       - pg-network
       - kafka-network
