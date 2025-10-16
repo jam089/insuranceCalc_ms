@@ -5,14 +5,22 @@ services:
       context: .
       dockerfile: app/Dockerfile
     container_name: insurance_calc_ms
-    env_file:
-      - ./docker_compose_envs/insurance_calc.env
+    environment:
+      INSURANCE__DB__URL: ${INSURANCE__DB__URL}
+      INSURANCE__DB__ECHO: ${INSURANCE__DB__ECHO}
+      INSURANCE__DB__ECHO_POOL: ${INSURANCE__DB__ECHO_POOL}
+      INSURANCE__KAFKA_LOGGER__BOOTSTRAP_SERVERS: ${INSURANCE__KAFKA_LOGGER__BOOTSTRAP_SERVERS}
+      INSURANCE__KAFKA_LOGGER__TOPIC: ${INSURANCE__KAFKA_LOGGER__TOPIC}
+      INSURANCE__KAFKA_LOGGER__ENABLE: ${INSURANCE__KAFKA_LOGGER__ENABLE}
     ports:
       - "8000:8000"
     depends_on:
-      - pg
-      - kafka-controller
-      - kafka-broker
+      pg:
+        condition: service_healthy
+      kafka-controller:
+        condition: service_started
+      kafka-broker:
+        condition: service_started
     networks:
       - pg-network
       - kafka-network
@@ -23,10 +31,18 @@ services:
       POSTGRES_DB: insurance
       POSTGRES_USER: pgadmin
       POSTGRES_PASSWORD: pgadmin
+      INSURANCE__DB__LOGIN: ${INSURANCE__DB__LOGIN}
+      INSURANCE__DB__PASS: ${INSURANCE__DB__PASS}
+      INSURANCE__DB__DB_SCHEMA: ${INSURANCE__DB__DB_SCHEMA}
     ports:
       - "5432:5432"
     networks:
       - pg-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U pgadmin -d insurance" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
 
   adminer:
     image: adminer
