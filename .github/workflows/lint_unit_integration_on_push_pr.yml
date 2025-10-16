@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-results
-          path: /home/runner/work/${{ github.repository }}/${{ github.event.repository.name }}/pytest-results.xml
+          path: ${{ github.workspace }}/pytest-results.xml
       - name: Publish Test Report
         uses: dorny/test-reporter@v2.1.1
         if: always()
@@ -107,7 +107,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-results
-          path: /home/runner/work/${{ github.repository }}/${{ github.event.repository.name }}/pytest-results.xml
+          path: ${{ github.workspace }}/pytest-results.xml
       - name: Publish Test Report
         uses: dorny/test-reporter@v2.1.1
         if: always()
