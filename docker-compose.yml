@@ -30,12 +30,9 @@ services:
   pg:
     image: postgres
     environment:
-      POSTGRES_DB: insurance
-      POSTGRES_USER: pgadmin
-      POSTGRES_PASSWORD: pgadmin
-      INSURANCE__DB__LOGIN: ${INSURANCE__DB__LOGIN}
-      INSURANCE__DB__PASS: ${INSURANCE__DB__PASS}
-      INSURANCE__DB__DB_SCHEMA: ${INSURANCE__DB__DB_SCHEMA}
+      POSTGRES_DB: ${INSURANCE__DB__DB_SCHEMA}
+      POSTGRES_USER: ${INSURANCE__DB__LOGIN}
+      POSTGRES_PASSWORD: ${INSURANCE__DB__PASS}
     ports:
       - "5432:5432"
     networks:
