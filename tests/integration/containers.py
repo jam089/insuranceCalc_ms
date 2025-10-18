@@ -46,9 +46,9 @@ def pg_container(compose_containers: DockerCompose) -> dict[str, str | int]:
     envs_dict = dict(
         line.split("=", 1) for line in envs.strip().splitlines() if "=" in line
     )
-    user = envs_dict["INSURANCE__DB__LOGIN"]
-    password = envs_dict["INSURANCE__DB__PASS"]
-    db_name = envs_dict["INSURANCE__DB__DB_SCHEMA"]
+    user = envs_dict["POSTGRES_USER"]
+    password = envs_dict["POSTGRES_PASSWORD"]
+    db_name = envs_dict["POSTGRES_DB"]
     host = pg.get_container_host_ip()
     port = pg.get_exposed_port(port=5432)
     url = f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{db_name}"
