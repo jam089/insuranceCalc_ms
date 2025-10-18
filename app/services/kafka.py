@@ -104,7 +104,7 @@ class KafkaProducer:
             return
         msg = {
             "action": crud_action,
-            "date_time": date_time.strftime("%Y-%m-%d"),
+            "date_time": date_time.strftime("%Y-%m-%d %H:%M:%S"),
         }
         if user_id:
             msg["user_id"] = str(user_id)
