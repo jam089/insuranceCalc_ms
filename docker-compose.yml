@@ -38,8 +38,8 @@ services:
     networks:
       - pg-network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U pgadmin -d insurance" ]
-      interval: 1s
+      test: [ "CMD-SHELL", "pg_isready -U $INSURANCE__DB__LOGIN -d $INSURANCE__DB__DB_SCHEMA -h localhost" ]
+      interval: 3s
       timeout: 5s
       retries: 10
 
