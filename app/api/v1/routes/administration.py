@@ -14,7 +14,13 @@ router = APIRouter(prefix="/administration", tags=["Administration"])
 async def import_rates(
     db_sess: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> None:
-    rates_dict = json_read(settings.import_.path)
+    try:
+        rates_dict = json_read(settings.import_.path)
+    except FileNotFoundError as err:
+        raise HTTPException(
+            status_code=status.HTTP_404_INTERNAL_SERVER_ERROR,
+            detail="file with data not found",
+        ) from err
     if not await bulk_load_rates(db_sess, rates_dict):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
