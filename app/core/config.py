@@ -37,6 +37,7 @@ class Settings(BaseSettings):
         env_file=[
             BASE_DIR.parent / ".env.template",
             BASE_DIR.parent / ".env",
+            BASE_DIR.parent / ".env.test",
         ],
         case_sensitive=False,
         env_nested_delimiter="__",
