@@ -3,12 +3,11 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import uvicorn
-from starlette.middleware.cors import CORSMiddleware
-
 from api import router as api_router
 from core import settings
 from fastapi import FastAPI
 from services import kafka
+from starlette.middleware.cors import CORSMiddleware
 
 logger = logging.getLogger("uvicorn")
 
