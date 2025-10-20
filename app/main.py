@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import uvicorn
+from starlette.middleware.cors import CORSMiddleware
+
 from api import router as api_router
 from core import settings
 from fastapi import FastAPI
@@ -19,6 +21,19 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost",
+    "http://127.0.0.1",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(api_router)
 
